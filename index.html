@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Taller de Programación con IA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #ffd6e8 0%, #fff9e6 25%, #e6f3ff 50%, #f0e6ff 75%, #e6fff9 100%);
+            min-height: 100vh;
+            color: #5a4a6f;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            color: #d64a94;
+            margin-bottom: 12px;
+            text-shadow: 2px 4px 8px rgba(214, 74, 148, 0.15);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #b8627a;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(214, 74, 148, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(0);
+            opacity: 1;
+            animation: fadeInUp 0.6s ease backwards;
+            border: 2px solid #ffd6e8;
+        }
+
+        .project-card:nth-child(1) { animation-delay: 0.1s; }
+        .project-card:nth-child(2) { animation-delay: 0.2s; }
+        .project-card:nth-child(3) { animation-delay: 0.3s; }
+        .project-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .project-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(214, 74, 148, 0.25);
+            border-color: #ffa8d3;
+        }
+
+        .project-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .project-card:hover .project-icon {
+            animation: bounce 0.6s ease;
+        }
+
+        .project-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #d64a94;
+            font-weight: 600;
+        }
+
+        .project-card p {
+            font-size: 0.95rem;
+            color: #8b6bb1;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            min-height: 48px;
+        }
+
+        .project-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ffa8d3 0%, #ff88c8 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .project-link:hover {
+            transform: translateX(4px);
+            box-shadow: 0 8px 16px rgba(255, 168, 211, 0.4);
+            background: linear-gradient(135deg, #ff88c8 0%, #ff68b3 100%);
+        }
+
+        .project-link:active {
+            transform: translateX(2px);
+        }
+
+        .project-link:focus {
+            outline: none;
+            border-color: #ffa8d3;
+            box-shadow: 0 0 0 3px rgba(255, 168, 211, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #b8627a;
+            border-top: 1px solid rgba(255, 168, 211, 0.2);
+            animation: fadeInUp 0.8s ease 0.5s backwards;
+        }
+
+        footer p {
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .project-card {
+                padding: 24px;
+            }
+        }
+
+        /* Modo oscuro respeta preferencia del usuario */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #3d2a47 0%, #4a3557 25%, #2a3a4a 50%, #3a2a4a 75%, #2a4a47 100%);
+            }
+
+            .project-card {
+                background: #3d2a47;
+                color: #e8d6f0;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                border-color: #5a4a6f;
+            }
+
+            .project-card h2 {
+                color: #ff88c8;
+            }
+
+            .project-card p {
+                color: #d0b0d8;
+            }
+
+            header h1 {
+                color: #ff88c8;
+            }
+
+            header p {
+                color: #d0b0d8;
+            }
+
+            footer {
+                color: #d0b0d8;
+                border-top-color: rgba(255, 168, 211, 0.2);
+            }
+        }
+
+        /* Accesibilidad: reducir movimiento si se prefiere */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+        /* Skip to content (accesibilidad) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #ffa8d3;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+            font-weight: 600;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main" class="skip-link">Ir al contenido principal</a>
+
+    <main id="main" class="container">
+        <header role="banner">
+            <h1>🚀 Taller de Programación con IA</h1>
+            <p>Explora proyectos interactivos: APIs, funciones y más</p>
+        </header>
+
+        <section class="projects-grid" aria-label="Proyectos del taller">
+            <!-- Proyecto 1: Funciones Día 3 -->
+            <article class="project-card">
+                <div class="project-icon" aria-hidden="true">✅</div>
+                <h2>Validador de Palíndromos</h2>
+                <p>Comprueba si una palabra o frase es un palíndromo. Incluye soporte para ignorar espacios y puntuación.</p>
+                <a href="funciones-dia-3/index.html" class="project-link" aria-label="Abrir validador de palíndromos">Ir al Proyecto</a>
+            </article>
+
+            <!-- Proyecto 2: API Día 3 (Pokémon) -->
+            <article class="project-card">
+                <div class="project-icon" aria-hidden="true">🔴</div>
+                <h2>Pokedex</h2>
+                <p>Busca Pokémons y obtén información detallada como tipos, habilidades, altura y peso usando la PokeAPI.</p>
+                <a href="api-dia-3/index.html" class="project-link" aria-label="Abrir Pokedex">Ir al Proyecto</a>
+            </article>
+
+            <!-- Proyecto 3: API Rick and Morty -->
+            <article class="project-card">
+                <div class="project-icon" aria-hidden="true">👽</div>
+                <h2>Rick and Morty - Personajes</h2>
+                <p>Busca personajes de la serie Rick and Morty. Visualiza su estado, especie y ubicación en tarjetas interactivas.</p>
+                <a href="api-rick-morty/index.html" class="project-link" aria-label="Abrir Rick and Morty">Ir al Proyecto</a>
+            </article>
+
+            <!-- Proyecto 4: Mini Proyecto (Gatos) -->
+            <article class="project-card">
+                <div class="project-icon" aria-hidden="true">🐱</div>
+                <h2>Datos Curiosos de Gatos</h2>
+                <p>Descubre hechos fascinantes sobre gatos con imágenes aleatorias. Interfaz con tema pastel muy agradable.</p>
+                <a href="miniproyecto/index.html" class="project-link" aria-label="Abrir datos curiosos de gatos">Ir al Proyecto</a>
+            </article>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <p>&copy; 2025 Taller de Programación con IA. Hecho con 💜 usando JavaScript Vanilla.</p>
+        <p style="margin-top: 8px; font-size: 0.85rem;">Todos los proyectos utilizan APIs públicas sin frameworks.</p>
+    </footer>
+</body>
+</html>

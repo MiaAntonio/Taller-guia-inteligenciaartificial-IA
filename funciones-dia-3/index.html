@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Validador de Palíndromos</title>
+		<style>
+			body { font-family: Arial, Helvetica, sans-serif; padding: 24px; background:#f7f7f8; }
+			.card { background: #fff; padding: 18px; border-radius:8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); max-width:760px; margin:0 auto }
+			h1 { margin-top:0 }
+			.row { display:flex; gap:8px; margin-top:10px }
+			input[type="text"] { flex:1; padding:8px; font-size:16px }
+			button { padding:8px 12px; font-size:16px }
+			#resultado { margin-top:12px; font-weight:600 }
+			.hint { color:#666; font-size:14px; margin-top:8px }
+			pre.example { background:#f0f0f0; padding:8px; border-radius:4px }
+		</style>
+	</head>
+	<body>
+		<div class="card">
+			<h1>Validador de Palíndromos</h1>
+			<p>Escribe una palabra o frase y pulsa <b>Comprobar</b> para saber si es un palíndromo.</p>
+
+			<div class="row">
+				<input id="texto" type="text" placeholder="Ej: anilina, reconocer, A mamá Roma..." aria-label="Texto a comprobar" />
+				<button id="btn">Comprobar</button>
+			</div>
+
+			<div class="hint">
+				<label><input id="ignorarPuntuacion" type="checkbox"> Ignorar espacios y signos de puntuación (recomendado)</label>
+			</div>
+
+			<div id="resultado" aria-live="polite"></div>
+
+			<p class="hint">Nota: la función usada (<code>esPalindromo</code>) convierte texto a minúsculas y elimina espacios por defecto. Si activas "Ignorar espacios y signos de puntuación" se eliminarán además caracteres no alfanuméricos antes de comprobar.</p>
+
+			<h3>Ejemplos</h3>
+			<pre class="example">anilina
+reconocer
+A mamá Roma le aviva el amor a mamá</pre>
+		</div>
+
+		<!-- Cargar script que contiene la función esPalindromo -->
+		<script src="palindromo.js"></script>
+
+		<script>
+			// Referencias a elementos
+			var textoInput = document.getElementById('texto');
+			var btn = document.getElementById('btn');
+			var resultado = document.getElementById('resultado');
+			var checkbox = document.getElementById('ignorarPuntuacion');
+
+			// Normaliza el texto eliminando signos de puntuación y dejando solo letras y números y espacios
+			function normalizar(text) {
+				// Reemplaza caracteres que no sean letras, números ni espacios por cadena vacía
+				return text.replace(/[^a-zA-Z0-9\s]/g, '');
+			}
+
+			btn.addEventListener('click', function () {
+				var valor = textoInput.value || '';
+				if (!valor.trim()) {
+					resultado.textContent = 'Por favor, escribe un texto para comprobar.';
+					resultado.style.color = '#000';
+					return;
+				}
+
+				var aComprobar = valor;
+				// Si el usuario quiere ignorar puntuación, aplicar normalización adicional
+				if (checkbox.checked) {
+					aComprobar = normalizar(aComprobar);
+				}
+
+				// Llamamos a la función esPalindromo definida en palindromo.js
+				try {
+					var es = esPalindromo(aComprobar);
+					if (es) {
+						resultado.textContent = '✅ Es un palíndromo.';
+						resultado.style.color = 'green';
+					} else {
+						resultado.textContent = '❌ No es un palíndromo.';
+						resultado.style.color = 'crimson';
+					}
+				} catch (err) {
+					resultado.textContent = 'Error al comprobar: ' + err.message;
+					resultado.style.color = 'crimson';
+				}
+			});
+
+			// Permitir pulsar Enter en el input para comprobar
+			textoInput.addEventListener('keydown', function (ev) {
+				if (ev.key === 'Enter') btn.click();
+			});
+		</script>
+	</body>
+</html>

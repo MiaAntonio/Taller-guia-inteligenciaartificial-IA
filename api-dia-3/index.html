@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>API Día 3</title>
+        <style>
+            body{font-family:Arial,Helvetica,sans-serif;background:#f5f7fa;margin:0;padding:24px}
+            .container{max-width:900px;margin:0 auto}
+            .search { display:flex; gap:8px; margin-top:12px }
+            input[type=text]{flex:1;padding:10px;font-size:16px;border-radius:6px;border:1px solid #ccd}
+            button{padding:10px 14px;font-size:16px;border-radius:6px;border:none;background:#1976d2;color:#fff;cursor:pointer}
+            .card{background:#fff;border-radius:8px;padding:16px;margin-top:18px;box-shadow:0 3px 10px rgba(0,0,0,0.08);display:flex;gap:16px;align-items:center}
+            .sprite{width:120px;height:120px;background:#f0f4ff;border-radius:8px;display:flex;align-items:center;justify-content:center}
+            .info h2{margin:0 0 8px 0;text-transform:capitalize}
+            .meta{color:#555;margin-top:6px}
+            .badge{display:inline-block;background:#eef2ff;color:#27408b;padding:4px 8px;border-radius:999px;margin-right:6px;font-size:13px;text-transform:capitalize}
+            .error{color:#b00020;font-weight:600;margin-top:12px}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Pokedex - Buscar Pokémon</h1>
+
+            <div class="search">
+                <input id="busqueda" type="text" placeholder="Escribe el nombre del Pokémon (ej: pikachu)" aria-label="Buscar Pokémon">
+                <button id="buscar">Buscar</button>
+            </div>
+
+            <div id="mensaje" class="error" role="status" aria-live="polite"></div>
+
+            <div id="resultado"></div>
+        </div>
+
+        <script src="api.js" defer></script>
+
+        <script>
+            // Referencias
+            var input = document.getElementById('busqueda');
+            var btn = document.getElementById('buscar');
+            var resultado = document.getElementById('resultado');
+            var mensaje = document.getElementById('mensaje');
+
+            function renderPokemon(data) {
+                // Limpiamos mensaje de error
+                mensaje.textContent = '';
+
+                var img = (data.sprites && data.sprites.front_default) ? data.sprites.front_default : '';
+                var types = data.types.map(function(t){ return t.type.name; }).join(', ');
+                var abilities = data.abilities.map(function(a){ return a.ability.name; }).join(', ');
+
+                resultado.innerHTML = '';
+
+                var card = document.createElement('div');
+                card.className = 'card';
+
+                var spr = document.createElement('div');
+                spr.className = 'sprite';
+                if (img) {
+                    var imgel = document.createElement('img');
+                    imgel.src = img;
+                    imgel.alt = data.name;
+                    imgel.width = 96;
+                    imgel.height = 96;
+                    spr.appendChild(imgel);
+                } else {
+                    spr.textContent = 'No image';
+                }
+
+                var info = document.createElement('div');
+                info.className = 'info';
+                var h = document.createElement('h2');
+                h.textContent = data.name;
+                var meta = document.createElement('div');
+                meta.className = 'meta';
+                meta.innerHTML =
+                    '<div><strong>Tipos:</strong> ' + types + '</div>' +
+                    '<div><strong>Habilidades:</strong> ' + abilities + '</div>' +
+                    '<div><strong>Altura:</strong> ' + data.height + ' | <strong>Peso:</strong> ' + data.weight + '</div>';
+
+                // Badges con tipos
+                var badges = document.createElement('div');
+                data.types.forEach(function(t){
+                    var b = document.createElement('span');
+                    b.className = 'badge';
+                    b.textContent = t.type.name;
+                    badges.appendChild(b);
+                });
+
+                info.appendChild(h);
+                info.appendChild(badges);
+                info.appendChild(meta);
+
+                card.appendChild(spr);
+                card.appendChild(info);
+
+                resultado.appendChild(card);
+            }
+
+            function buscar() {
+                var q = (input.value || '').trim();
+                resultado.innerHTML = '';
+                mensaje.textContent = '';
+                if (!q) {
+                    mensaje.textContent = 'Escribe un nombre de Pokémon para buscar.';
+                    return;
+                }
+
+                // Mostrar indicador simple
+                mensaje.textContent = 'Buscando...';
+
+                obtenerPokemonApi(q)
+                    .then(function(data){
+                        renderPokemon(data);
+                        mensaje.textContent = '';
+                    })
+                    .catch(function(err){
+                        mensaje.textContent = 'No se encontró el Pokémon o hubo un error: ' + err.message;
+                    });
+            }
+
+            btn.addEventListener('click', buscar);
+            input.addEventListener('keydown', function(ev){ if (ev.key === 'Enter') buscar(); });
+        </script>
+    </body>
+</html>
